@@ -1,0 +1,25 @@
+- name: Create group if not exist
+  group:
+    name: "{{ user_group }}"
+    state: present
+
+- name: Creating a user
+  user:
+    name: "{{ user_name }}"
+    shell: /bin/bash
+    groups: "{{ user_group }}"
+    state: present
+
+- name: Create directory if it does not exist
+  file:
+    path: "/home/{{user_name}}/{{ user_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy file to user dir
+  copy:
+    src: "my_file.txt"
+    dest: "/home/{{ user_name}}/{{ user_dir }}/my_file.txt"
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode:   '0644'

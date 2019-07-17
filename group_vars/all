@@ -1,0 +1,7 @@
+user_name: tester
+user_group: dev
+user_pass: "pass123"
+user_dir: "data"
+psql_db_name: test
+psql_db_user: test
+psql_db_user_pass: "passdb123"
