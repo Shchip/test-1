@@ -2,7 +2,8 @@
   become: yes
 #  become_method: sudo
   gather_facts: false
-
+  
   roles:
     - common
     - postgresql
+    - docker

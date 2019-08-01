@@ -1,16 +1,31 @@
+- name: Install PostgreSQL GPG apt Key
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+
+- name: Add PostgreSQL repository 
+  apt_repository:
+    repo: deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main
+    state: present
+
 - name: Update repository cache
   apt:
     update_cache: yes
 
-- name: Install PostgreSQL
+- name: Install PostgreSQL and dependency
   apt:
     name: "{{ packages }}"
   vars:
     packages:
-    - postgresql
-    - postgresql-contrib
+    - postgresql-9.6
+    - postgresql-contrib-9.6
     - libpq-dev
     - python-psycopg2
+    - python3-pip
+
+- name: Install psycopg2 for use Postgres module
+  pip:
+    name: psycopg2
 
 - name: Create PostgreSQL User
   become: yes
@@ -40,19 +55,19 @@
     objs: ALL_IN_SCHEMA
     privs: SELECT,INSERT,UPDATE,DELETE
 
-- name: change postgres network binding
+- name: Change PostgreSQL network binding
   lineinfile:
-    path: /etc/postgresql/9.1/main/postgresql.conf
+    path: /etc/postgresql/9.6/main/postgresql.conf
     regexp: '# listen_addresses'
     line: "listen_addresses = '*'"
 
-- name: change postgres pg hba access
+- name: Change PostgreSQL pg_hba access
   lineinfile:
-    path: /etc/postgresql/9.1/main/pg_hba.conf
+    path: /etc/postgresql/9.6/main/pg_hba.conf
     regexp: 'host  all  all 0.0.0.0/0 md5'
     line: 'host  all  all 0.0.0.0/0 md5'
 
-- name: start postgresql server
+- name: Start PostgreSQL server
   service:
     enabled: yes
     name: postgresql

@@ -5,3 +5,7 @@ user_dir: "data"
 psql_db_name: test
 psql_db_user: test
 psql_db_user_pass: "passdb123"
+docker_container_name: nginx
+docker_container_image: shchyp/test:v1
+docker_port: 80
+#ansible_python_interpreter: "/usr/bin/env python3"

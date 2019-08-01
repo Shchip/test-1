@@ -13,7 +13,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 COPY ./files/index.html /var/www/site/index.html
 
 # Add nginx config
-ADD ./files/default /etc/nginx/sites-available/default
+ADD ./files/default.conf /etc/nginx/sites-available/default
 
 # Disable ipv6
 ADD ./files/ipv6off.sh /etc/rc.local

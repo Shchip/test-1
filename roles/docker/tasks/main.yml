@@ -1,0 +1,67 @@
+- name: Update apt-cache
+  apt:
+    update_cache: yes
+
+- name: Install Dependencies
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - python3-pip
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg-agent
+    - software-properties-common
+    - virtualenv
+    - python3-setuptools
+
+- name: Install docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add docker apt repository
+  apt_repository:
+    state: present
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+
+- name: Update apt-cache
+  apt:
+    update_cache: yes
+
+- name: Install docker package
+  apt:
+    name: "{{ packages }}"
+    state: present
+  vars:
+      packages:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+
+- name: Install Docker Module for Python
+  pip:
+    name: docker
+
+- name: Restart Docker
+  service:
+    name: docker
+    state: restarted
+    enabled: yes
+
+# Pull image from the Docker Hub
+- name: Pull Docker image
+  become: yes
+  docker_image:
+    name: "{{ docker_container_image }}"
+    source: pull
+
+# Create container defined by the variable
+- name: Create containers
+  docker_container:
+    name: "{{ docker_container_name }}"
+    image: "{{ docker_container_image }}"
+    ports: "{{ docker_port }}:80"
+    state: started
